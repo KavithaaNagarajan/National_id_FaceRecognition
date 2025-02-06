@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Similarity Detection</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Result Display */
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Face Image Checker</h1>
+    
+    <form id="imageForm" enctype="multipart/form-data">
+        <div>
+            <label for="image1">Upload National ID:</label><br>
+            <input type="file" id="image1" name="image1" accept="image/*" required><br>
+        </div>
+
+        <div>
+            <label for="image2">Upload Photocopy:</label><br>
+            <input type="file" id="image2" name="image2" accept="image/*" required><br>
+        </div>
+
+        <button type="submit">Compare</button>
+    </form>
+
+    <div class="result" id="result">
+        <!-- Similarity score will be displayed here -->
+    </div>
+
+    <script>
+        const form = document.getElementById('imageForm');
+        const resultDiv = document.getElementById('result');
+
+        form.onsubmit = async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (data.similarity_score !== undefined) {
+                resultDiv.innerHTML = `<p>SSIM Similarity Score: ${data.similarity_score}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
